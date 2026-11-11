@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +20,9 @@ public class Shooter {
     private VoltageSensor voltageSensor;
     private DcMotorEx ShooterMotor = null;
     private static final double KF = 0.00251;
+    private static final double kP = 0.012;
 
+    private double targetSpeed;
 
     public Shooter(HardwareMap hardware) {
         ShooterMotor = hardware.get(DcMotorEx.class, "shooter");
@@ -27,9 +31,14 @@ public class Shooter {
 
     }
     public void spinShoot(double shoot) {
-        double targetVolts = shoot*KF;
-//        shoot = Math.min(0.61, shoot);
-        ShooterMotor.setPower(targetVolts/voltageSensor.getVoltage());
+        targetSpeed = shoot;
+        if (targetSpeed > 4500){
+            targetSpeed= 4500;
+        }
+        if (targetSpeed < -500){
+            targetSpeed= -500;
+        }
+
 
     }
 
@@ -38,12 +47,20 @@ public class Shooter {
         return (ticksPerSecond / 28) * 60 ;
     }
 
-    public void periodic(Telemetry telemetry){
+    public void periodic(TelemetryManager telemetry){
+
+        double error=targetSpeed-getSpeedRPM();
+
+        double targetVolts =
+                targetSpeed * KF
+                + kP * error;
+
+//        shoot = Math.min(0.61, shoot);
+        ShooterMotor.setPower(targetVolts/voltageSensor.getVoltage());
 
 
         telemetry.addData("shoter speed",getSpeedRPM());
-
-
+        telemetry.addData("Target Speed", targetSpeed);
     }
 
 }

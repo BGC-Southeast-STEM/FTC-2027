@@ -31,8 +31,8 @@ public class Drivetrain {
     }
 
     public void arcadeDrive(double drive, double turn) {
-        double leftPower  = Range.clip(drive - turn, -1.0, 1.0) ;
-        double rightPower = Range.clip(drive + turn, -1.0, 1.0) ;
+        double leftPower  = Range.clip(drive - turn * .5, -1.0, 1.0) ;
+        double rightPower = Range.clip(drive + turn * .5, -1.0, 1.0) ;
         tankDrive(leftPower, rightPower);
     }
 

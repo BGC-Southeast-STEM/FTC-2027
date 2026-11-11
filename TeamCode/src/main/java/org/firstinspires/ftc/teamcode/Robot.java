@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 //https://github.com/BGC-Southeast-STEM/FTC-2027/blob/cb43b5691cfab2318bcf2a0cf06fa640e985a13f/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/DefaultOpMode.java#L99
 // The Quick Brown Fox Jumps Over The Lazy Dog
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -36,7 +38,10 @@ public class Robot {
     }
 
     public static void periodic(Telemetry telemetry) {
-        shooter.periodic(telemetry);
+        TelemetryManager panels = PanelsTelemetry.INSTANCE.getTelemetry();
+        shooter.periodic(panels);
+
+        panels.update();
     }
 
 
